@@ -1,0 +1,159 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{booktabs}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{Rapport Technique : Moteur de Recherche en Droit Commercial}
+\author{[Votre Nom]}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Présentation du Sujet}
+
+\subsection{Contexte et Objectifs}
+Ce projet consiste en la réalisation d'un moteur de recherche spécialisé dans le domaine du droit commercial. L'objectif principal est de permettre aux professionnels du droit, juristes et étudiants d'accéder rapidement et efficacement à des informations juridiques pertinentes dans un corpus de documents prédéfinis.
+
+\subsection{Fonctionnalités}
+Le moteur de recherche offre les fonctionnalités suivantes :
+\begin{itemize}
+    \item Recherche par mots-clés utilisant l'indexation Whoosh
+    \item Recherche sémantique basée sur BERT
+    \item Recherche hybride combinant les approches par mots-clés et sémantique
+    \item Visualisation des résultats avec aperçu du contenu
+    \item Interface utilisateur intuitive via Streamlit
+    \item API REST avec FastAPI pour l'accès programmatique
+\end{itemize}
+
+\subsection{Types de Ressources et Formats}
+Le système traite actuellement :
+\begin{itemize}
+    \item Documents PDF contenant des textes juridiques
+    \item Corpus de 90 documents en droit commercial
+    \item Textes en langue française
+\end{itemize}
+
+\section{Processus d'Indexation et de Recherche}
+
+\subsection{Indexation}
+\subsubsection{Méthode d'Indexation}
+L'indexation est automatique et suit les étapes suivantes :
+\begin{enumerate}
+    \item Extraction du texte des PDFs avec PyPDF2
+    \item Prétraitement du texte :
+    \begin{itemize}
+        \item Tokenisation avec spaCy
+        \item Suppression des stop words
+        \item Lemmatisation des termes
+    \end{itemize}
+    \item Création d'embeddings BERT pour la recherche sémantique
+    \item Stockage dans l'index Whoosh
+\end{enumerate}
+
+\subsection{Stockage}
+\subsubsection{Structure de l'Index}
+L'index Whoosh est structuré comme suit :
+\begin{lstlisting}[language=Python]
+Schema(
+    path=ID(stored=True),
+    title=TEXT(stored=True),
+    content=TEXT(analyzer=StemmingAnalyzer(), stored=True),
+    vector=TEXT(stored=True)
+)
+\end{lstlisting}
+
+\subsection{Modèles de Recherche}
+Le système implémente trois approches de recherche :
+
+\subsubsection{Recherche par Mots-clés}
+Utilise l'index Whoosh avec la formule TF-IDF classique :
+\begin{equation}
+    score(d,q) = \sum_{t \in q} tf(t,d) \times idf(t)
+\end{equation}
+
+\subsubsection{Recherche Sémantique}
+Basée sur la similarité cosinus des embeddings BERT :
+\begin{equation}
+    similarity(d,q) = 1 - cosine(BERT(d), BERT(q))
+\end{equation}
+
+\subsubsection{Recherche Hybride}
+Combine les scores avec une pondération paramétrable :
+\begin{equation}
+    score_{final} = w_1 \times score_{keywords} + w_2 \times score_{semantic}
+\end{equation}
+
+\section{Choix Technologiques}
+
+\subsection{Backend}
+\begin{itemize}
+    \item \textbf{FastAPI} : Framework web Python moderne
+    \item \textbf{Whoosh} : Moteur d'indexation et de recherche
+    \item \textbf{spaCy} : Traitement du langage naturel
+    \item \textbf{Sentence Transformers} : Modèles BERT pour embeddings
+\end{itemize}
+
+\subsection{Frontend}
+\begin{itemize}
+    \item \textbf{Streamlit} : Interface utilisateur interactive
+    \item \textbf{PyPDF2} : Lecture des fichiers PDF
+\end{itemize}
+
+\section{Réalisation et Évaluation}
+
+\subsection{Exemples de Requêtes}
+[À compléter avec des captures d'écran et résultats de requêtes spécifiques]
+
+\subsection{Évaluation des Performances}
+\subsubsection{Métriques}
+Pour évaluer les performances du système, nous utilisons :
+\begin{itemize}
+    \item Précision : $P = \frac{TP}{TP + FP}$
+    \item Rappel : $R = \frac{TP}{TP + FN}$
+    \item F1-Score : $F1 = 2 \times \frac{P \times R}{P + R}$
+\end{itemize}
+
+\subsubsection{Résultats}
+[À compléter avec les résultats des évaluations]
+
+\section{Conclusion}
+Ce moteur de recherche juridique combine des approches traditionnelles et modernes pour offrir une recherche efficace dans des documents de droit commercial. L'utilisation d'une approche hybride permet d'obtenir des résultats pertinents en exploitant à la fois la recherche par mots-clés et la compréhension sémantique du texte.
+
+\end{document}
