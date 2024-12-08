@@ -62,7 +62,7 @@ def main():
                     if results:
                         for i, result in enumerate(results, 1):
                             with st.expander(f"{i}. {result['title']} (Score: {result['score']:.4f})"):
-                                st.write(f"Chemin du fichier: {result['path']}")
+                                st.markdown(f"[Cliquez ici pour ouvrir le PDF](file:///C:/Users/fraij/Documents/projet-sri/{result['path']})")
                                 
                                 # Ajout d'un bouton pour visualiser le PDF
                                 if os.path.exists(result['path']):
